@@ -9,23 +9,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.thecodeside.rxjavaweather.R;
 import pl.thecodeside.rxjavaweather.data.Weather;
+import pl.thecodeside.rxjavaweather.json.WeatherListModel;
+import pl.thecodeside.rxjavaweather.services.WeatherClient;
 import pl.thecodeside.rxjavaweather.views.WeatherAdapter;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 
 public class ForecastFragment extends Fragment implements WeatherAdapter.WeatherListener {
 
     @BindView(R.id.rvForecast)
     RecyclerView rvForecast;
+
+    private WeatherAdapter adapter;
+    private List<Weather> weatherList;
+
+    private Subscription weatherSubscription;
 
     public static ForecastFragment newInstance() {
         return new ForecastFragment();
@@ -36,26 +44,50 @@ public class ForecastFragment extends Fragment implements WeatherAdapter.Weather
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_forecast, container, false);
         ButterKnife.bind(this, rootView);
-        WeatherAdapter adapter = new WeatherAdapter(getActivity(), this);
-        adapter.setWeatherList(getWeather());
+        adapter = new WeatherAdapter(getActivity(), this);
         rvForecast.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         rvForecast.setAdapter(adapter);
+
+        getWeather("Guardalavaca", "metric");
         return rootView;
     }
 
-    private List<Weather> getWeather() {
-        List<Weather> weatherList = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
-            GregorianCalendar gregorianCalendar = new GregorianCalendar();
-            gregorianCalendar.add(GregorianCalendar.DATE, i);
+    private void getWeather(String city, String units) {
+        weatherSubscription = WeatherClient.getInstance()
+                .getWeather(city, units)
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<WeatherListModel, List<Weather>>() {
+                    @Override
+                    public List<Weather> call(WeatherListModel weatherListModel) {
+                        return WeatherClient.getInstance().weatherConverter(weatherListModel);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Weather>>() {
+                    @Override
+                    public void onCompleted() {
 
-            Date date = gregorianCalendar.getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat("EE MM dd");
-            Weather weather = new Weather(100.0, 80, 25, 36, "clear", "very clear", sdf.format(date));
-            weatherList.add(weather);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Weather> weathers) {
+                        adapter.setWeatherList(weathers);
+                    }
+                });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (weatherSubscription != null && !weatherSubscription.isUnsubscribed()) {
+            weatherSubscription.unsubscribe();
         }
-        return weatherList;
     }
 
     @Override

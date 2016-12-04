@@ -31,6 +31,14 @@ public class Weather implements Parcelable {
         this.weatherDate = weatherDate;
     }
 
+    public void setWeatherDetail(String weatherDetail) {
+        this.weatherDetail = weatherDetail;
+    }
+
+    public void setWeatherBasic(String weatherBasic) {
+        this.weatherBasic = weatherBasic;
+    }
+
     protected Weather(Parcel in) {
         temperatureMax = in.readDouble();
         temperatureMin = in.readDouble();

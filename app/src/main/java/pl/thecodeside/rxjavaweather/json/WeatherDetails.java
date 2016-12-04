@@ -1,4 +1,4 @@
-package pl.thecodeside.rxjavaweather.model;
+package pl.thecodeside.rxjavaweather.json;
 
 import com.google.gson.annotations.SerializedName;
 
