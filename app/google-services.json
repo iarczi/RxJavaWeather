@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1055853637756",
+    "firebase_url": "https://rxjavaweather.firebaseio.com",
+    "project_id": "rxjavaweather",
+    "storage_bucket": "rxjavaweather.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055853637756:android:3b02ee2e92519adf",
+        "android_client_info": {
+          "package_name": "pl.thecodeside.rxjavaweather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1055853637756-apcon2vh8aq9d00rlc0u6pa9k8qfvd19.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pl.thecodeside.rxjavaweather",
+            "certificate_hash": "171DABCA13AD4CD34806399E37EA2C8D53507A23"
+          }
+        },
+        {
+          "client_id": "1055853637756-8lj2dbrjh1bp9n7ealmfr3um71tnikln.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwhUwi-f6BoJ0K1ANyOwEnWSst7rm859U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1055853637756-8lj2dbrjh1bp9n7ealmfr3um71tnikln.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

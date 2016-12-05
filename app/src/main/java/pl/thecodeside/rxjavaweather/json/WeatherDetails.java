@@ -13,6 +13,9 @@ public class WeatherDetails {
     @SerializedName("description")
     String detailedWeatherDescription;
 
+    @SerializedName("icon")
+    String weatherIcon;
+
     public WeatherDetails() {
     }
 
@@ -22,5 +25,9 @@ public class WeatherDetails {
 
     public String getDetailedWeatherDescription() {
         return detailedWeatherDescription;
+    }
+
+    public String getWeatherIcon() {
+        return weatherIcon;
     }
 }

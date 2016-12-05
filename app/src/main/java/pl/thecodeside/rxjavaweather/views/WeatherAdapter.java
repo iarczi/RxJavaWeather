@@ -25,6 +25,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherVIewHolder> impl
     private LayoutInflater inflater;
     private Context context;
     private WeatherListener listener;
+    private boolean isMetric;
 
     @Override
     public int getItemViewType(int position) {
@@ -39,11 +40,17 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherVIewHolder> impl
         throw new IllegalArgumentException("We are at end of the list!");
     }
 
+    public void setMetric(boolean metric) {
+        isMetric = metric;
+    }
+
     public WeatherAdapter(Context context, WeatherListener listener) {
         this.context = context;
         this.listener = listener;
         inflater = LayoutInflater.from(context);
         weatherList = new ArrayList<>();
+        isMetric = true;
+
     }
 
     public void setWeatherList(List<Weather> weatherList) {
@@ -67,7 +74,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherVIewHolder> impl
 
     @Override
     public void onBindViewHolder(WeatherVIewHolder holder, int position) {
-        holder.populate(weatherList.get(position), position);
+        holder.populate(weatherList.get(position), position, context, isMetric);
     }
 
     @Override

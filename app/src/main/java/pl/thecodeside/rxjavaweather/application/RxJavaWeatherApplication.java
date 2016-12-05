@@ -3,6 +3,8 @@ package pl.thecodeside.rxjavaweather.application;
 import android.app.Application;
 import android.content.Context;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
  * Created by Artur Latoszewski on 01.12.2016.
  */
@@ -13,6 +15,7 @@ public class RxJavaWeatherApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
     public AppComponent getComponent() {

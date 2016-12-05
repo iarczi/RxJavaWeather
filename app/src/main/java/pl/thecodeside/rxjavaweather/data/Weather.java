@@ -1,27 +1,28 @@
 package pl.thecodeside.rxjavaweather.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import pl.thecodeside.rxjavaweather.utils.Constants;
 
 /**
  * Created by Artur Latoszewski on 01.12.2016.
  */
 
-public class Weather implements Parcelable {
+public class Weather {
     private double temperatureMax;
     private double temperatureMin;
     private double pressure;
     private double humidity;
-    private String weatherBasic;
-    private String weatherDetail;
-    private String weatherDate;
 
     public Weather() {
     }
 
+    private String weatherBasic;
+
+    private String weatherDetail;
+    private String weatherDate;
+    private String weatherIcon;
+
     public Weather(double temperatureMax, double temperatureMin,
-                   double pressure, double humidity, String weatherBasic,
-                   String weatherDetail, String weatherDate) {
+                   double pressure, double humidity, String weatherBasic, String weatherDetail, String weatherDate, String weatherIcon) {
         this.temperatureMax = temperatureMax;
         this.temperatureMin = temperatureMin;
         this.pressure = pressure;
@@ -29,52 +30,20 @@ public class Weather implements Parcelable {
         this.weatherBasic = weatherBasic;
         this.weatherDetail = weatherDetail;
         this.weatherDate = weatherDate;
+        this.weatherIcon = weatherIcon;
     }
+
 
     public void setWeatherDetail(String weatherDetail) {
         this.weatherDetail = weatherDetail;
     }
 
-    public void setWeatherBasic(String weatherBasic) {
-        this.weatherBasic = weatherBasic;
+    public void setWeatherDate(String weatherDate) {
+        this.weatherDate = weatherDate;
     }
 
-    protected Weather(Parcel in) {
-        temperatureMax = in.readDouble();
-        temperatureMin = in.readDouble();
-        pressure = in.readDouble();
-        humidity = in.readDouble();
-        weatherBasic = in.readString();
-        weatherDetail = in.readString();
-        weatherDate = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeDouble(temperatureMax);
-        parcel.writeDouble(temperatureMin);
-        parcel.writeDouble(pressure);
-        parcel.writeDouble(humidity);
-        parcel.writeString(weatherBasic);
-        parcel.writeString(weatherDetail);
-        parcel.writeString(weatherDate);
-    }
-
-    public static final Creator<Weather> CREATOR = new Creator<Weather>() {
-        @Override
-        public Weather createFromParcel(Parcel in) {
-            return new Weather(in);
-        }
-
-        @Override
-        public Weather[] newArray(int size) {
-            return new Weather[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setWeatherIco(String weatherIco) {
+        this.weatherIcon = weatherIco;
     }
 
     public double getTemperatureMax() {
@@ -103,5 +72,17 @@ public class Weather implements Parcelable {
 
     public String getWeatherDate() {
         return weatherDate;
+    }
+
+    public void setWeatherBasic(String weatherBasic) {
+        this.weatherBasic = weatherBasic;
+    }
+
+    public String getWeatherIcon() {
+        return weatherIcon;
+    }
+
+    public String getWeatherUrl() {
+        return Constants.BASE_WEATHER_ICON_URL + weatherIcon + ".png";
     }
 }

@@ -1,9 +1,12 @@
 package pl.thecodeside.rxjavaweather.views;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +36,7 @@ public class WeatherVIewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void populate(Weather weather, int position) {
+    public void populate(Weather weather, int position, Context context, boolean isMetric) {
         itemView.setTag(weather);
         String date;
 
@@ -46,11 +49,21 @@ public class WeatherVIewHolder extends RecyclerView.ViewHolder {
         }
 
         weatherDate.setText(date);
-        weatherImage.setImageResource(R.mipmap.ic_launcher);
-        weatherMax.setText(roundTemperature(weather.getTemperatureMax()));
-        weatherMin.setText(roundTemperature(weather.getTemperatureMin()));
+        if (isMetric) {
+            weatherMax.setText(context.getString(R.string.format_temperatue
+                    , roundTemperature(weather.getTemperatureMax()), context.getString(R.string.celsius_sign)));
+            weatherMin.setText(context.getString(R.string.format_temperatue
+                    , roundTemperature(weather.getTemperatureMin()), context.getString(R.string.celsius_sign)));
+        } else {
+            weatherMax.setText(context.getString(R.string.format_temperatue
+                    , roundTemperature(weather.getTemperatureMax()), context.getString(R.string.fahrenheit_sign)));
+            weatherMin.setText(context.getString(R.string.format_temperatue
+                    , roundTemperature(weather.getTemperatureMin()), context.getString(R.string.fahrenheit_sign)));
+        }
 
         weatherDescription.setText(weather.getWeatherDetail());
+
+        Picasso.with(context).load(weather.getWeatherUrl()).into(weatherImage);
     }
 
     private String roundTemperature(double temperature) {

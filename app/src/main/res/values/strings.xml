@@ -1,5 +1,21 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">RxJavaWeather</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="location">Location</string>
+    <string name="location_key">location</string>
+    <string name="location_default">Warsaw</string>
+    <string name="units">Units</string>
+    <string name="units_dialog_title">Choose Units</string>
+    <string name="units_key">units</string>
+    <string name="units_imperial">Imperial</string>
+    <string name="units_metric">Metric</string>
+    <string name="units_metric_values">Metric</string>
+    <string name="units_imperial_values">Imperial</string>
+    <string name="settings">Settings</string>
+    <string name="offilne_mode_toast">You are on offline mode</string>
+    <string name="check_internet_toast">Please check your internet</string>
+    <string name="format_temperatue"><xliff:g id="temp"> %1$s </xliff:g> \u00B0%2$s</string>
+    <string name="celsius_sign">C</string>
+    <string name="fahrenheit_sign">F</string>
+
 </resources>
