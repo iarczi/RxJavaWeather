@@ -1,6 +1,6 @@
-package pl.thecodeside.rxjavaweather.services;
+package pl.thecodeside.rxjavaweather.data.source;
 
-import pl.thecodeside.rxjavaweather.json.WeatherListModel;
+import pl.thecodeside.rxjavaweather.data.json.WeatherListModel;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;

@@ -1,4 +1,4 @@
-package pl.thecodeside.rxjavaweather.activities;
+package pl.thecodeside.rxjavaweather.forecast;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import pl.thecodeside.rxjavaweather.R;
-import pl.thecodeside.rxjavaweather.fragments.ForecastFragment;
+import pl.thecodeside.rxjavaweather.prototypes.BaseFragmentActivity;
+import pl.thecodeside.rxjavaweather.settings.SettingsActivity;
 
-public class MainActivity extends BaseFragmentActivity {
+public class ForecastActivity extends BaseFragmentActivity {
 
     @Override
     protected Fragment createFragment() {

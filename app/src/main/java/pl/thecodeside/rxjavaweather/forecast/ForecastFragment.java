@@ -1,4 +1,4 @@
-package pl.thecodeside.rxjavaweather.fragments;
+package pl.thecodeside.rxjavaweather.forecast;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -23,10 +23,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.thecodeside.rxjavaweather.R;
 import pl.thecodeside.rxjavaweather.data.Weather;
-import pl.thecodeside.rxjavaweather.json.WeatherListModel;
-import pl.thecodeside.rxjavaweather.services.WeatherClient;
+import pl.thecodeside.rxjavaweather.data.json.WeatherListModel;
+import pl.thecodeside.rxjavaweather.data.source.WeatherClient;
 import pl.thecodeside.rxjavaweather.utils.Constants;
-import pl.thecodeside.rxjavaweather.views.WeatherAdapter;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;

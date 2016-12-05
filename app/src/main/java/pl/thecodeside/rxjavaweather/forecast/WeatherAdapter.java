@@ -1,4 +1,4 @@
-package pl.thecodeside.rxjavaweather.views;
+package pl.thecodeside.rxjavaweather.forecast;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

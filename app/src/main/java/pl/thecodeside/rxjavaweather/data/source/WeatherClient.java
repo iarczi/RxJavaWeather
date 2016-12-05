@@ -1,4 +1,4 @@
-package pl.thecodeside.rxjavaweather.services;
+package pl.thecodeside.rxjavaweather.data.source;
 
 import android.content.Context;
 import android.widget.Toast;
@@ -21,10 +21,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pl.thecodeside.rxjavaweather.R;
 import pl.thecodeside.rxjavaweather.data.Weather;
-import pl.thecodeside.rxjavaweather.json.WeatherDetails;
-import pl.thecodeside.rxjavaweather.json.WeatherListModel;
+import pl.thecodeside.rxjavaweather.data.json.WeatherDetails;
+import pl.thecodeside.rxjavaweather.data.json.WeatherListModel;
+import pl.thecodeside.rxjavaweather.forecast.WeatherAdapter;
 import pl.thecodeside.rxjavaweather.utils.Constants;
-import pl.thecodeside.rxjavaweather.views.WeatherAdapter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;

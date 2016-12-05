@@ -1,4 +1,4 @@
-package pl.thecodeside.rxjavaweather.activities;
+package pl.thecodeside.rxjavaweather.prototypes;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

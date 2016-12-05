@@ -1,4 +1,4 @@
-package pl.thecodeside.rxjavaweather.activities;
+package pl.thecodeside.rxjavaweather.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
