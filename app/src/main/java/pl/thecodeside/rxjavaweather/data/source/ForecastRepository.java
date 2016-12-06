@@ -6,23 +6,23 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pl.thecodeside.rxjavaweather.R;
-import pl.thecodeside.rxjavaweather.data.Weather;
+import pl.thecodeside.rxjavaweather.data.Forecast;
+import pl.thecodeside.rxjavaweather.data.json.ForecastSourceModel;
 import pl.thecodeside.rxjavaweather.data.json.WeatherDetails;
-import pl.thecodeside.rxjavaweather.data.json.WeatherListModel;
 import pl.thecodeside.rxjavaweather.forecast.WeatherAdapter;
 import pl.thecodeside.rxjavaweather.utils.Constants;
 import retrofit2.Retrofit;
@@ -33,12 +33,13 @@ import rx.Observable;
 /**
  * Created by Artur Latoszewski on 03.12.2016.
  */
+@Singleton
+public class ForecastRepository {
+    private static ForecastRepository forecastRepository;
+    private forecastApi forecastApi;
 
-public class WeatherClient {
-    private static WeatherClient weatherClient;
-    private APIWeather apiWeather;
-
-    private WeatherClient() {
+    @Inject
+    public ForecastRepository() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -50,34 +51,32 @@ public class WeatherClient {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-
-        apiWeather = retrofit.create(APIWeather.class);
+        forecastApi = retrofit.create(forecastApi.class);
     }
 
 
-    //TODO reorganize with Dagger
-    public static WeatherClient getInstance() {
-        if (weatherClient == null) {
-            weatherClient = new WeatherClient();
+    public static ForecastRepository getInstance() {
+        if (forecastRepository == null) {
+            forecastRepository = new ForecastRepository();
         }
-        return weatherClient;
+        return forecastRepository;
     }
 
-    public Observable<WeatherListModel> getWeather(String city, String units) {
-        return apiWeather.getWeather(city, "7", Constants.BASE_WEATHER_API_KEY, "json", units);
+    public Observable<ForecastSourceModel> getForecast(String city, String units) {
+        return forecastApi.getWeather(city, "7", Constants.BASE_WEATHER_API_KEY, "json", units);
     }
 
-    public List<Weather> weatherConverter(WeatherListModel weatherListModel, String appId) {
-        final List<Weather> weatherList = new ArrayList<>();
+    public List<Forecast> forecastConverter(ForecastSourceModel forecastSourceModel) {
+        final List<Forecast> forecastList = new ArrayList<>();
         int position = 0;
 
-        for (WeatherListModel.WeatherMain main : weatherListModel.weatherMainList) {
+        for (ForecastSourceModel.WeatherMain main : forecastSourceModel.weatherMainList) {
             GregorianCalendar gregorianCalendar = new GregorianCalendar();
             gregorianCalendar.add(GregorianCalendar.DATE, position);
             Date time = gregorianCalendar.getTime();
             SimpleDateFormat sdf = new SimpleDateFormat("EEE MM dd");
 
-            Weather weather = new Weather(
+            Forecast forecast = new Forecast(
                     main.fullDetails.tempMax
                     , main.fullDetails.tempMin
                     , main.fullDetails.pressure
@@ -88,40 +87,40 @@ public class WeatherClient {
                     , "");
             for (WeatherDetails weatherDetails : main.weatherDetailsList
                     ) {
-                weather.setWeatherIco(weatherDetails.getWeatherIcon());
-                weather.setWeatherBasic(weatherDetails.getBasicWeatherDescription());
-                weather.setWeatherDetail(weatherDetails.getDetailedWeatherDescription());
+                forecast.setWeatherIco(weatherDetails.getWeatherIcon());
+                forecast.setWeatherBasic(weatherDetails.getBasicWeatherDescription());
+                forecast.setWeatherDetail(weatherDetails.getDetailedWeatherDescription());
 
             }
 
-            weatherList.add(weather);
+            forecastList.add(forecast);
             ++position;
         }
 
-        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference(Constants.DATABASE_FIREBASE_PATH + appId);
+        /*final DatabaseReference reference = FirebaseDatabase.getInstance().getReference(Constants.DATABASE_FIREBASE_PATH + appId);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.hasChildren()) {
                     int index = 0;
-                    for (Weather weather : weatherList) {
-                        reference.child(Integer.toString(index)).setValue(weather);
+                    for (Forecast forecast : forecastList) {
+                        reference.child(Integer.toString(index)).setValue(forecast);
                         ++index;
                     }
                 } else {
                     int index = 0;
-                    for (Weather weather : weatherList) {
+                    for (Forecast forecast : forecastList) {
                         Map newWeatherData = new HashMap();
 
-                        newWeatherData.put("humidity", weather.getHumidity());
-                        newWeatherData.put("temperatureMax", weather.getTemperatureMax());
-                        newWeatherData.put("temperatureMin", weather.getTemperatureMin());
-                        newWeatherData.put("pressure", weather.getPressure());
-                        newWeatherData.put("weatherBasic", weather.getWeatherBasic());
-                        newWeatherData.put("weatherDetail", weather.getWeatherDetail());
-                        newWeatherData.put("weatherDate", weather.getWeatherDate());
-                        newWeatherData.put("weatherIcon", weather.getWeatherIcon());
-                        newWeatherData.put("weatherUrl", weather.getWeatherUrl());
+                        newWeatherData.put("humidity", forecast.getHumidity());
+                        newWeatherData.put("temperatureMax", forecast.getTemperatureMax());
+                        newWeatherData.put("temperatureMin", forecast.getTemperatureMin());
+                        newWeatherData.put("pressure", forecast.getPressure());
+                        newWeatherData.put("weatherBasic", forecast.getWeatherBasic());
+                        newWeatherData.put("weatherDetail", forecast.getWeatherDetail());
+                        newWeatherData.put("weatherDate", forecast.getWeatherDate());
+                        newWeatherData.put("weatherIcon", forecast.getWeatherIcon());
+                        newWeatherData.put("weatherUrl", forecast.getWeatherUrl());
 
                         reference.child(Integer.toString(index)).updateChildren(newWeatherData);
                         ++index;
@@ -134,9 +133,9 @@ public class WeatherClient {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
 
-        return weatherList;
+        return forecastList;
     }
 
 
@@ -144,18 +143,18 @@ public class WeatherClient {
         return reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Weather> weatherList = new ArrayList<Weather>();
+                List<Forecast> forecastList = new ArrayList<Forecast>();
                 if (dataSnapshot != null && dataSnapshot.hasChildren()) {
                     for (DataSnapshot weatherData : dataSnapshot.getChildren()) {
-                        Weather weather = weatherData.getValue(Weather.class);
-                        weatherList.add(weather);
+                        Forecast forecast = weatherData.getValue(Forecast.class);
+                        forecastList.add(forecast);
                     }
                 }
-                if (weatherList.isEmpty()) {
+                if (forecastList.isEmpty()) {
                     Toast.makeText(context, R.string.check_internet_toast, Toast.LENGTH_LONG).show();
 
                 }
-                adapter.setWeatherList(weatherList);
+                adapter.setForecastList(forecastList);
             }
 
             @Override

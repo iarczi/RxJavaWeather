@@ -1,9 +1,6 @@
 package pl.thecodeside.rxjavaweather.forecast;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,35 +10,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.thecodeside.rxjavaweather.R;
-import pl.thecodeside.rxjavaweather.data.Weather;
-import pl.thecodeside.rxjavaweather.data.json.WeatherListModel;
-import pl.thecodeside.rxjavaweather.data.source.WeatherClient;
-import pl.thecodeside.rxjavaweather.utils.Constants;
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import pl.thecodeside.rxjavaweather.data.Forecast;
 
 
-public class ForecastFragment extends Fragment implements WeatherAdapter.WeatherListener {
+public class ForecastFragment extends Fragment implements ForecastContract.View, WeatherAdapter.WeatherListener {
+
+
 
     @BindView(R.id.rvForecast)
     RecyclerView rvForecast;
 
     private WeatherAdapter adapter;
-    private DatabaseReference databaseReference;
-    private Subscription weatherSubscription;
-    private ValueEventListener listener;
+    /*private DatabaseReference databaseReference;
+    private ValueEventListener listener;*/
+
+    private ForecastContract.Presenter presenter;
 
     public static ForecastFragment newInstance() {
         return new ForecastFragment();
@@ -60,41 +48,38 @@ public class ForecastFragment extends Fragment implements WeatherAdapter.Weather
     public void onStart() {
         super.onStart();
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SharedPreferences appPreferences = getActivity().getSharedPreferences(Constants.APP_ID_PREFERENCES, Context.MODE_PRIVATE);
-
-        String appId = appPreferences.getString(Constants.APP_ID, "");
-        if (appId.isEmpty()) {
-            databaseReference = FirebaseDatabase.getInstance().getReference().push();
-            appPreferences.edit().putString(Constants.APP_ID, databaseReference.getKey()).apply();
-        } else {
-            databaseReference = FirebaseDatabase.getInstance()
-                    .getReference(Constants.DATABASE_FIREBASE_PATH + appId);
-        }
-
-        String city = sharedPreferences.getString(Constants.LOCATION_PREFERENCE, getString(R.string.location_default));
-        String units = sharedPreferences.getString(Constants.UNIT_PREFERENCE, getString(R.string.units_metric_values));
         adapter = new WeatherAdapter(getActivity(), this);
         rvForecast.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         rvForecast.setAdapter(adapter);
 
-        getWeather(city, units, appId);
+        presenter.subscribe();
 
     }
 
-    private void getWeather(String city, final String units, final String appId) {
-        weatherSubscription = WeatherClient.getInstance()
-                .getWeather(city, units)
+    /*
+
+    String appId = sharedPreferences.getString(Constants.APP_ID, "");
+    if (appId.isEmpty()) {
+        databaseReference = FirebaseDatabase.getInstance().getReference().push();
+        sharedPreferences.edit().putString(Constants.APP_ID, databaseReference.getKey()).apply();
+    } else {
+        databaseReference = FirebaseDatabase.getInstance()
+                .getReference(Constants.DATABASE_FIREBASE_PATH + appId);
+    }*/
+
+    /*private void getWeather(String city, final String units, final String appId) {
+        weatherSubscription = ForecastRepository.getInstance()
+                .getForecast(city, units)
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<WeatherListModel, List<Weather>>() {
+                .map(new Func1<ForecastSourceModel, List<Forecast>>() {
                     @Override
-                    public List<Weather> call(WeatherListModel weatherListModel) {
-                        return WeatherClient.getInstance().weatherConverter(weatherListModel, appId);
+                    public List<Forecast> call(ForecastSourceModel weatherListModel) {
+                        return ForecastRepository.getInstance().forecastConverter(weatherListModel, appId);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Weather>>() {
+                .subscribe(new Observer<List<Forecast>>() {
                     @Override
                     public void onCompleted() {
 
@@ -102,39 +87,67 @@ public class ForecastFragment extends Fragment implements WeatherAdapter.Weather
 
                     @Override
                     public void onError(Throwable e) {
-                        listener = WeatherClient.getInstance().readFromFirebase(databaseReference, adapter, getActivity());
+                        listener = ForecastRepository.getInstance().readFromFirebase(databaseReference, adapter, getActivity());
                         databaseReference.addValueEventListener(listener);
                         Toast.makeText(getContext(), R.string.offilne_mode_toast, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onNext(List<Weather> weathers) {
-                        //adapter.setWeatherList(weathers);
-                        listener = WeatherClient.getInstance().readFromFirebase(databaseReference, adapter, getActivity());
+                    public void onNext(List<Forecast> forecasts) {
+                        //adapter.setForecastList(forecasts);
+                        listener = ForecastRepository.getInstance().readFromFirebase(databaseReference, adapter, getActivity());
                         databaseReference.addValueEventListener(listener);
-                        adapter.setMetric(isMetricUnits(units));
+
 
                     }
                 });
-    }
+    }*/
 
-    private boolean isMetricUnits(String units) {
-        return units.equals(getContext().getString(R.string.units_metric_values));
-    }
+
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (weatherSubscription != null && !weatherSubscription.isUnsubscribed()) {
+        presenter.unsubscribe();
+        /*if (weatherSubscription != null && !weatherSubscription.isUnsubscribed()) {
             weatherSubscription.unsubscribe();
         }
         if (listener != null) {
             databaseReference.removeEventListener(listener);
-        }
+        }*/
     }
 
     @Override
-    public void weatherClicked(Weather weather) {
+    public void weatherClicked(Forecast forecast) {
 
     }
+
+    @Override
+    public void showForecasts(List<Forecast> forecastList) {
+        adapter.setForecastList(forecastList);
+    }
+
+    @Override
+    public void showForecastOffline() {
+        Toast.makeText(getContext(), R.string.offilne_mode_toast, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showNoForecast() {
+        Toast.makeText(getContext(), R.string.check_internet_toast, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void setUnits(boolean isMetric) {
+        adapter.setUnits(isMetric);
+    }
+
+    @Override
+    public void setPresenter(ForecastContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+
+
+
 }

@@ -6,13 +6,13 @@ import pl.thecodeside.rxjavaweather.utils.Constants;
  * Created by Artur Latoszewski on 01.12.2016.
  */
 
-public class Weather {
+public class Forecast {
     private double temperatureMax;
     private double temperatureMin;
     private double pressure;
     private double humidity;
 
-    public Weather() {
+    public Forecast() {
     }
 
     private String weatherBasic;
@@ -21,8 +21,8 @@ public class Weather {
     private String weatherDate;
     private String weatherIcon;
 
-    public Weather(double temperatureMax, double temperatureMin,
-                   double pressure, double humidity, String weatherBasic, String weatherDetail, String weatherDate, String weatherIcon) {
+    public Forecast(double temperatureMax, double temperatureMin,
+                    double pressure, double humidity, String weatherBasic, String weatherDetail, String weatherDate, String weatherIcon) {
         this.temperatureMax = temperatureMax;
         this.temperatureMin = temperatureMin;
         this.pressure = pressure;

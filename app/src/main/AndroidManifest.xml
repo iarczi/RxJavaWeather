@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
 
-        android:name=".application.RxJavaWeatherApplication">
+        android:name=".application.WeatherApplication">
         <activity
             android:name=".forecast.ForecastActivity"
             android:screenOrientation="portrait">

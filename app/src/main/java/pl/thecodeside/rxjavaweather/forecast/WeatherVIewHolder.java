@@ -11,7 +11,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.thecodeside.rxjavaweather.R;
-import pl.thecodeside.rxjavaweather.data.Weather;
+import pl.thecodeside.rxjavaweather.data.Forecast;
 
 /**
  * Created by Artur Latoszewski on 02.12.2016.
@@ -36,8 +36,8 @@ public class WeatherVIewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void populate(Weather weather, int position, Context context, boolean isMetric) {
-        itemView.setTag(weather);
+    public void populate(Forecast forecast, int position, Context context, boolean isMetric) {
+        itemView.setTag(forecast);
         String date;
 
         if (position == 0) {
@@ -45,25 +45,25 @@ public class WeatherVIewHolder extends RecyclerView.ViewHolder {
         } else if (position == 1) {
             date = "Tomorrow";
         } else {
-            date = weather.getWeatherDate();
+            date = forecast.getWeatherDate();
         }
 
         weatherDate.setText(date);
         if (isMetric) {
             weatherMax.setText(context.getString(R.string.format_temperatue
-                    , roundTemperature(weather.getTemperatureMax()), context.getString(R.string.celsius_sign)));
+                    , roundTemperature(forecast.getTemperatureMax()), context.getString(R.string.celsius_sign)));
             weatherMin.setText(context.getString(R.string.format_temperatue
-                    , roundTemperature(weather.getTemperatureMin()), context.getString(R.string.celsius_sign)));
+                    , roundTemperature(forecast.getTemperatureMin()), context.getString(R.string.celsius_sign)));
         } else {
             weatherMax.setText(context.getString(R.string.format_temperatue
-                    , roundTemperature(weather.getTemperatureMax()), context.getString(R.string.fahrenheit_sign)));
+                    , roundTemperature(forecast.getTemperatureMax()), context.getString(R.string.fahrenheit_sign)));
             weatherMin.setText(context.getString(R.string.format_temperatue
-                    , roundTemperature(weather.getTemperatureMin()), context.getString(R.string.fahrenheit_sign)));
+                    , roundTemperature(forecast.getTemperatureMin()), context.getString(R.string.fahrenheit_sign)));
         }
 
-        weatherDescription.setText(weather.getWeatherDetail());
+        weatherDescription.setText(forecast.getWeatherDetail());
 
-        Picasso.with(context).load(weather.getWeatherUrl()).into(weatherImage);
+        Picasso.with(context).load(forecast.getWeatherUrl()).into(weatherImage);
     }
 
     private String roundTemperature(double temperature) {

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pl.thecodeside.rxjavaweather.R;
-import pl.thecodeside.rxjavaweather.data.Weather;
+import pl.thecodeside.rxjavaweather.data.Forecast;
 
 /**
  * Created by Artur Latoszewski on 02.12.2016.
@@ -21,7 +21,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherVIewHolder> impl
     private final int VIEW_TYPE_HEADER = 1;
     private final int VIEW_TYPE_BODY = 2;
 
-    private List<Weather> weatherList;
+    private List<Forecast> forecastList;
     private LayoutInflater inflater;
     private Context context;
     private WeatherListener listener;
@@ -33,14 +33,14 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherVIewHolder> impl
             return VIEW_TYPE_HEADER;
         }
         --position;
-        if (position < weatherList.size()) {
+        if (position < forecastList.size()) {
             return VIEW_TYPE_BODY;
         }
-        position -= weatherList.size();
+        position -= forecastList.size();
         throw new IllegalArgumentException("We are at end of the list!");
     }
 
-    public void setMetric(boolean metric) {
+    public void setUnits(boolean metric) {
         isMetric = metric;
     }
 
@@ -48,14 +48,14 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherVIewHolder> impl
         this.context = context;
         this.listener = listener;
         inflater = LayoutInflater.from(context);
-        weatherList = new ArrayList<>();
+        forecastList = new ArrayList<>();
         isMetric = true;
 
     }
 
-    public void setWeatherList(List<Weather> weatherList) {
-        this.weatherList.clear();
-        this.weatherList.addAll(weatherList);
+    public void setForecastList(List<Forecast> forecastList) {
+        this.forecastList.clear();
+        this.forecastList.addAll(forecastList);
         notifyDataSetChanged();
     }
 
@@ -74,22 +74,22 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherVIewHolder> impl
 
     @Override
     public void onBindViewHolder(WeatherVIewHolder holder, int position) {
-        holder.populate(weatherList.get(position), position, context, isMetric);
+        holder.populate(forecastList.get(position), position, context, isMetric);
     }
 
     @Override
     public int getItemCount() {
-        return weatherList.size();
+        return forecastList.size();
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getTag() instanceof Weather) {
-            listener.weatherClicked((Weather) view.getTag());
+        if (view.getTag() instanceof Forecast) {
+            listener.weatherClicked((Forecast) view.getTag());
         }
     }
 
     public interface WeatherListener {
-        void weatherClicked(Weather weather);
+        void weatherClicked(Forecast forecast);
     }
 }

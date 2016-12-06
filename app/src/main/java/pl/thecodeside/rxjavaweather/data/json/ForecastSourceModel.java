@@ -9,13 +9,12 @@ import java.util.List;
  * Created by Artur Latoszewski on 02.12.2016.
  */
 
-public class WeatherListModel {
+public class ForecastSourceModel {
     @SerializedName("list")
     public List<WeatherMain> weatherMainList;
 
 
-
-    public WeatherListModel() {
+    public ForecastSourceModel() {
 
     }
 
