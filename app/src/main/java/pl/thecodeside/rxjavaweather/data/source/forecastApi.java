@@ -9,10 +9,10 @@ import rx.Observable;
  * Created by Artur Latoszewski on 02.12.2016.
  */
 
-public interface forecastApi {
+public interface ForecastApi {
 
     @GET("/data/2.5/forecast")
-    Observable<ForecastSourceModel> getWeather(
+    Observable<ForecastSourceModel> getForecast(
             @Query("q") String city,
             @Query("cnt") String days,
             @Query("appid") String appid,

@@ -18,14 +18,15 @@ import pl.thecodeside.rxjavaweather.R;
 import pl.thecodeside.rxjavaweather.data.Forecast;
 
 
-public class ForecastFragment extends Fragment implements ForecastContract.View, WeatherAdapter.WeatherListener {
+public class ForecastFragment extends Fragment
+        implements ForecastContract.View, ForecastAdapter.WeatherListener {
 
 
 
     @BindView(R.id.rvForecast)
     RecyclerView rvForecast;
 
-    private WeatherAdapter adapter;
+    private ForecastAdapter adapter;
     /*private DatabaseReference databaseReference;
     private ValueEventListener listener;*/
 
@@ -37,7 +38,9 @@ public class ForecastFragment extends Fragment implements ForecastContract.View,
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_forecast, container, false);
         ButterKnife.bind(this, rootView);
 
@@ -48,7 +51,7 @@ public class ForecastFragment extends Fragment implements ForecastContract.View,
     public void onStart() {
         super.onStart();
 
-        adapter = new WeatherAdapter(getActivity(), this);
+        adapter = new ForecastAdapter(getActivity(), this);
         rvForecast.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         rvForecast.setAdapter(adapter);
@@ -68,7 +71,7 @@ public class ForecastFragment extends Fragment implements ForecastContract.View,
                 .getReference(Constants.DATABASE_FIREBASE_PATH + appId);
     }*/
 
-    /*private void getWeather(String city, final String units, final String appId) {
+    /*private void getForecast(String city, final String units, final String appId) {
         weatherSubscription = ForecastRepository.getInstance()
                 .getForecast(city, units)
                 .subscribeOn(Schedulers.io())

@@ -16,7 +16,7 @@ import pl.thecodeside.rxjavaweather.data.Forecast;
  * Created by Artur Latoszewski on 02.12.2016.
  */
 
-public class WeatherAdapter extends RecyclerView.Adapter<WeatherVIewHolder> implements View.OnClickListener {
+public class ForecastAdapter extends RecyclerView.Adapter<WeatherVIewHolder> implements View.OnClickListener {
 
     private final int VIEW_TYPE_HEADER = 1;
     private final int VIEW_TYPE_BODY = 2;
@@ -44,7 +44,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherVIewHolder> impl
         isMetric = metric;
     }
 
-    public WeatherAdapter(Context context, WeatherListener listener) {
+    public ForecastAdapter(Context context, WeatherListener listener) {
         this.context = context;
         this.listener = listener;
         inflater = LayoutInflater.from(context);

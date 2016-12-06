@@ -11,14 +11,14 @@ import java.util.List;
 
 public class ForecastSourceModel {
     @SerializedName("list")
-    public List<WeatherMain> weatherMainList;
+    public List<ForecastBody> weatherMainList;
 
 
     public ForecastSourceModel() {
 
     }
 
-    public class WeatherMain {
+    public class ForecastBody {
         @SerializedName("main")
         public WeatherFullDetails fullDetails;
 
