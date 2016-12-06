@@ -7,3 +7,5 @@ Refactored for MVP, Dagger2
 In progress:
 - Repository Pattern 
 - Firebase (currently commented)
+- Tests
+- Develop project in TDD process
